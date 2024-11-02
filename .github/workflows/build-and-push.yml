@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t bot-test:latest .
+          docker build -t ${{ secrets.HARBOR_HOST }}/library/bot-test:latest .
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
