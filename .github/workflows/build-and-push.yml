@@ -1,0 +1,31 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted
+    name: Build and Push Docker Image
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.HARBOR_HOST }}/bot-test:latest .
+
+      - name: Log in to Harbor
+        run: |
+          echo ${{ secrets.HARBOR_TOKEN }} | docker login ${{ secrets.HARBOR_HOST }} -u ${{ secrets.HARBOR_USER }} --password-stdin
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.HARBOR_HOST }}/library/bot-test:latest
+
+      - name: Send Discord notification
+        run: |
+          curl -H "Content-Type: application/json" -X POST -d '{"content": "Job ${{ job.status }}"}' https://discord.com/api/webhooks/${{ secrets.DISCORD_ID }}/${{ secrets.DISCORD_TOKEN }}
