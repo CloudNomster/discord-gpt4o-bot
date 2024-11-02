@@ -16,6 +16,10 @@ jobs:
         with:
           go-version: '1.23'
 
+      - name: Build Go project
+        run: |
+          go build -o bot .
+
       - name: Build Docker image
         run: |
           docker build -t bot-test:latest .
