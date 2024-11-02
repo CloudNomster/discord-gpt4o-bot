@@ -22,7 +22,7 @@ jobs:
 
       - name: Download Go dependencies
         run: |
-          go mod download
+          go mod tidy
 
       - name: Build Go project
         run: |
