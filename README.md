@@ -1,2 +1,1 @@
-# discord-gpt4o-bot
-A repository for a Discord bot using GPT-4o
+This repository is empty. Any task executed on it should be considered a new capability and needs to be created.
