@@ -27,7 +27,7 @@ func main() {
 		return
 	}
 
-	dg.AddMessageCreateHandler(messageCreate)
+	dg.AddHandler(messageCreate)
 
 	err = dg.Open()
 	if err != nil {
@@ -71,12 +71,12 @@ func isMentioned(m *discordgo.MessageCreate) bool {
 }
 
 func generateResponse(message string) (string, error) {
-	client := openai.NewClient(os.Getenv("GPT4O_API_KEY"))
+	client := openai.NewClientWithConfig(os.Getenv("GPT4O_API_KEY"))
 	ctx := context.Background()
-	req := openai.CompletionRequest{
+	req := openai.CompletionRequestV1{
 		Prompt: message,
 	}
-	response, err := client.CreateCompletion(ctx, req, option.WithMaxTokens(150))
+	response, err := client.CreateCompletionV1(ctx, req, openai.WithMaxTokens(150))
 	if err != nil {
 		return "", err
 	}
