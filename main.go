@@ -1,14 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
-	"context"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/openai/openai-go"
+	"github.com/openai/openai-go/option"
 )
 
 func main() {
@@ -70,14 +71,18 @@ func isMentioned(m *discordgo.MessageCreate) bool {
 }
 
 func generateResponse(message string) (string, error) {
-	client := openai.NewClient(os.Getenv("GPT4O_API_KEY"))
+	client := openai.NewClient(option.WithAPIKey(os.Getenv("GPT4O_API_KEY")))
 	ctx := context.Background()
-	req := openai.CompletionRequest{
-		Prompt: message,
-	}
-	response, err := client.CreateCompletion(ctx, req)
+
+	chatCompletion, err := client.Chat.Completions.New(ctx, openai.ChatCompletionNewParams{
+		Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
+			openai.UserMessage(message),
+		}),
+		Model: openai.F(openai.ChatModelGPT4o),
+	})
 	if err != nil {
 		return "", err
 	}
-	return response.Choices[0].Text, nil
+
+	return chatCompletion.Choices[0].Message.Content, nil
 }
