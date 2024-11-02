@@ -9,7 +9,6 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/openai/openai-go"
-	"github.com/openai/openai-go/option"
 )
 
 func main() {
@@ -71,12 +70,12 @@ func isMentioned(m *discordgo.MessageCreate) bool {
 }
 
 func generateResponse(message string) (string, error) {
-	client := openai.NewClientWithConfig(os.Getenv("GPT4O_API_KEY"))
+	client := openai.NewClient(os.Getenv("GPT4O_API_KEY"))
 	ctx := context.Background()
-	req := openai.CompletionRequestV1{
+	req := openai.CompletionRequest{
 		Prompt: message,
 	}
-	response, err := client.CreateCompletionV1(ctx, req, openai.WithMaxTokens(150))
+	response, err := client.CreateCompletion(ctx, req)
 	if err != nil {
 		return "", err
 	}
