@@ -32,9 +32,12 @@ jobs:
         run: |
           docker build -t bot-test:latest .
 
-      - name: Log in to Harbor
-        run: |
-          echo ${{ secrets.HARBOR_TOKEN }} | docker login ${{ secrets.HARBOR_HOST }} -u ${{ secrets.HARBOR_USER }} --password-stdin
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.HARBOR_HOST }}
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_TOKEN }}
 
       - name: Push Docker image
         run: |
